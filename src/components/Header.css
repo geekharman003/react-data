@@ -1,0 +1,32 @@
+#header{
+    display: flex;
+    flex-direction: column;
+    background-color: #2561E7;
+    color:#fff;
+    align-items: center;
+    /* gap: 10px; */
+    padding:100px 0;
+    text-align: center;
+    /* line-height: 20px; */
+}
+
+#header > h1{
+    margin-bottom: 24px;
+}
+
+#header>p{
+    /* font-size: 20px; */
+    margin-bottom: 30px;
+}
+
+.icon{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+#features-icons{
+display: flex;
+gap: 20px;
+}
