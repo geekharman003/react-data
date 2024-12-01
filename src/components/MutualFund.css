@@ -8,6 +8,7 @@
     height: 500px;
     border-radius: 20px;
     padding: 20px;
+    overflow: auto;
   }
   
   #mutual-funds-filters{
@@ -73,7 +74,7 @@
 
 
 #mutual-fund-data-container{
-  overflow-y: auto;
+  /* overflow-y: auto; */
 }
   
 .company-data{
@@ -91,6 +92,8 @@
 }
 
 #mutual-fund-house-container{
+  display: flex;
+  flex-wrap: wrap;
 margin-top: 5px;
 }
 

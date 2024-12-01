@@ -46,9 +46,15 @@ const MutualFund = ({schemeCodes}) => {
     {
        filteredCodes && ( filteredCodes.map((item)=>{
 
-           return <button onMouseDown={changeBackground} onMouseUp={removeFocus} style={{
-            width:"auto",
-         padding:"10px",
+           return <div onMouseDown onMouseUp style={{
+             display:"flex",
+        flexDirection:"column",
+        flexWrap:"wrap",
+        maxWidth:"200px",
+        minWidth:"200px",
+        alignItems:"center",
+        justifyContent:"center",
+        textAlign:"center",
          marginRight:"10px",
          marginBottom:"5px",
          border:"0",
@@ -56,10 +62,13 @@ const MutualFund = ({schemeCodes}) => {
          color:"#000",
          padding: "10px 15px",
          borderRadius: "20px",
-         marginRight: "10px",
          fontWeight: "600"
 
-           }} className='mutual-fund-house-name'>{item}</button>
+           }} className='mutual-fund-house-name'>
+            <div style={{width:"100px"}}>
+            <img width={"100%"} src={`src/images/${item.split(" ")[0]}.jpg`}/>
+            </div>
+           {item}</div>
         
         })
     )
