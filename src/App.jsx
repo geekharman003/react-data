@@ -115,7 +115,7 @@ function App() {
       </div> */}
       <Header />
       <Features />
-      <MutualFund schemeCodes={schemeCodes}/>
+      <MutualFund schemeCodes={schemeCodes} schemeNames={schemeNames}/>
 
     
       

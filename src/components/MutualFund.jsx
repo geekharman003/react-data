@@ -3,11 +3,15 @@ import "./MutualFund.css"
 import { ExternalLink } from 'lucide-react';
 import { Search } from 'lucide-react';
 
-const MutualFund = ({schemeCodes}) => {
+const MutualFund = ({schemeCodes,schemeNames}) => {
 
     const [btnStyling,setBtnStyling] = useState({});
-    const [backgroundColor,setBackgroundColor] = useState("");
     const [isClickedLoadMore,setIsClickedLoadMore] = useState(false);
+
+    const selectedValues = {
+        companyName:"",
+        category:""
+    };
 
    const filteredCodes = [];
    schemeCodes.forEach((item) => {
@@ -15,6 +19,8 @@ const MutualFund = ({schemeCodes}) => {
         filteredCodes.push(item.value)
     }
    })
+
+   const filteredSchemeNames= [];
 
    useEffect(()=>{
     setBtnStyling({
@@ -41,13 +47,22 @@ const MutualFund = ({schemeCodes}) => {
     setIsClickedLoadMore((prev) => !prev);
    }
 
-//    function handleMouseEnterOnFundHouse(e){
-//     e.target.style.borderColor = "blue";
-//    }
+   
 
-//    function handleMouseLeaveonFundHouse(){
-//     e.target.style.borderColor = "white";
-//    }
+   function handleClickOnFundHouse(e){
+    selectedValues.companyName = e.target.textContent;
+    console.log(selectedValues.companyName)
+   }
+
+   function handleClickOnFilters(e){
+    selectedValues.category = e.target.textContent;
+    schemeNames.forEach((item)=>{
+        if(item.includes(selectedValues.companyName.split(" ")[0]) && item.includes(selectedValues.category.split(" ")[0])){
+            console.log(item)
+           filteredSchemeNames.push(item);
+        }
+    })
+   }
 
 //    filteredCodes && (
 //     filteredCodes.forEach((item) => {
@@ -92,10 +107,9 @@ const MutualFund = ({schemeCodes}) => {
     {
        filteredCodes && ( filteredCodes.map((item,index)=>{
         if(index<=3){
-            return <div style={{
+            return <div onClick={handleClickOnFundHouse} style={{
                 display:"flex",
                 flexDirection:"column",
-                cursor:"pointer",
                 flexWrap:"wrap",
                 maxWidth:"200px",
                 minWidth:"200px",
@@ -114,11 +128,11 @@ const MutualFund = ({schemeCodes}) => {
                 borderColor: "rgba(0,0,255,0.04)",
                 borderRadius: "20px",
                 fontWeight: "600"
-            }}>
+            }} className='mutual-fund-house-name'>
             <div style={{width:"100px"}}>
             <img width={"100%"} src={`src/images/${item.split(" ")[0]}.jpg`}/>
             </div>
-            <div>
+            <div style={{}}>
             {item}
             <ExternalLink size={"13px"} color='grey' style={{marginLeft:"10px"}} />
             </div>      
@@ -138,7 +152,6 @@ const MutualFund = ({schemeCodes}) => {
         }
         else{
            return <div  style={{
-        //   display:"flex",
           display:isClickedLoadMore?"flex":"none",
          flexDirection:"column",
          flexWrap:"wrap",
@@ -178,10 +191,12 @@ const MutualFund = ({schemeCodes}) => {
       }
     </div>
     <div id="mutual-funds-filters">
-      <button className="filter all-funds-filter">All Funds</button>
-      <button className="filter equity-filter">Equity</button>
-      <button className="filter debt-filter">Debt</button>
-      <button className="filter hybrid-filter">Hybrid</button>
+
+ 
+      <button onClick={handleClickOnFilters} className="filter all-funds-filter">All Funds</button>
+      <button onClick={handleClickOnFilters} className="filter equity-filter">Equity</button>
+      <button onClick={handleClickOnFilters} className="filter debt-filter">Debt</button>
+      <button onClick={handleClickOnFilters} className="filter hybrid-filter">Hybrid</button>
     <hr />
     </div>
    <div id="applied-filters-container">
@@ -198,7 +213,19 @@ const MutualFund = ({schemeCodes}) => {
   </div>
   <div id='mutual-fund-data-container'>
         <div className="company-data">
-            <div className='company-name'>
+
+        {
+        filteredSchemeNames && (
+            filteredSchemeNames.map((scheme)=>{
+             <div className='company-name'>
+                <h4>{scheme}</h4>
+            </div>
+            })
+        )
+    }
+    </div>
+ 
+            {/* <div className='company-name'>
                 <h4>Axis Bank Small Cap Mutual Fund</h4>
             </div>
             <div className='returns'>
@@ -228,7 +255,7 @@ const MutualFund = ({schemeCodes}) => {
             <div className='returns'>
                 <div>20%</div>
             </div>
-        </div>
+        </div> */}
   </div>
 
   </div>
