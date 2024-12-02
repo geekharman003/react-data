@@ -5,10 +5,9 @@
     width: 90%;
     margin: 0 auto 20px auto;
     border:1px solid rgba(0, 0, 0, 0.219);
-    height: 500px;
+    /* height: 3; */
     border-radius: 20px;
     padding: 20px;
-    overflow: auto;
   }
   
   #mutual-funds-filters{
@@ -93,8 +92,11 @@
 
 #mutual-fund-house-container{
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
 margin-top: 5px;
+overflow: hidden;
 }
 
 /* .mutual-fund-house-name{
@@ -119,6 +121,17 @@ margin-top: 5px;
 
 .mutual-fund-house-name:hover{
   cursor: pointer;
+}
+
+
+#load-more-btn{
+  transition:all 0.2s;
+  font-family: inherit;
+}
+
+#load-more-btn:hover{
+  cursor: pointer;
+  background-color: rgb(211, 27, 27);
 }
 
 

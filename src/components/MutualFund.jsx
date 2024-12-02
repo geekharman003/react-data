@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import "./MutualFund.css"
+import { ExternalLink } from 'lucide-react';
 import { Search } from 'lucide-react';
 
 const MutualFund = ({schemeCodes}) => {
+
+    const [btnStyling,setBtnStyling] = useState({});
+    const [backgroundColor,setBackgroundColor] = useState("");
+    const [isClickedLoadMore,setIsClickedLoadMore] = useState(false);
 
    const filteredCodes = [];
    schemeCodes.forEach((item) => {
@@ -11,6 +16,38 @@ const MutualFund = ({schemeCodes}) => {
     }
    })
 
+   useEffect(()=>{
+    setBtnStyling({
+        padding: "10px 15px",
+        border:"0",
+        borderRadius: "10px",
+        backgroundColor:"#edf1f6",
+    })
+   },[])
+
+
+   function handleEnter(e){
+        e.target.style.backgroundColor = "#d9d9d9"
+   }
+
+    function handleLeave(e){
+        e.target.style.backgroundColor = "#edf1f6"
+        e.target.style.color = "#000";
+   }
+
+   function handleLoadMoreBtn(e){
+    e.target.style.backgroundColor = "#3446EC";
+    e.target.style.color = "#fff";
+    setIsClickedLoadMore((prev) => !prev);
+   }
+
+//    function handleMouseEnterOnFundHouse(e){
+//     e.target.style.borderColor = "blue";
+//    }
+
+//    function handleMouseLeaveonFundHouse(){
+//     e.target.style.borderColor = "white";
+//    }
 
 //    filteredCodes && (
 //     filteredCodes.forEach((item) => {
@@ -23,17 +60,26 @@ const MutualFund = ({schemeCodes}) => {
     //  )
 
 
-    function changeBackground(e){
-        e.target.style.backgroundColor = "#3446EC";
-        e.target.style.color = "#fff"
+    // function handleBtnStyling(){
+    //     setBtnStyling({
+    //         padding: "10px 15px",
+    //         border:"0",
+    //         borderRadius: "10px",
+    //         backgroundColor:"#edf1f6",
+    //     })
+    // }
 
-    }
+    // function changeBackground(e){
+    //     e.target.style.backgroundColor = "#3446EC";
+    //     e.target.style.color = "#fff"
+
+    // }
 
 
-    function removeFocus(){
-        e.target.style.backgroundColor = "#edf1f6";
-        e.target.stylle.color = "#000"
-    }
+    // function removeFocus(){
+    //     e.target.style.backgroundColor = "#edf1f6";
+    //     e.target.stylle.color = "#000"
+    // }
 
   return (
     <div id="mututal-funds-container">
@@ -44,31 +90,88 @@ const MutualFund = ({schemeCodes}) => {
     <div id='mutual-fund-house-container'>
      
     {
-       filteredCodes && ( filteredCodes.map((item)=>{
+       filteredCodes && ( filteredCodes.map((item,index)=>{
+        if(index<=3){
+            return <div style={{
+                display:"flex",
+                flexDirection:"column",
+                cursor:"pointer",
+                flexWrap:"wrap",
+                maxWidth:"200px",
+                minWidth:"200px",
+                minHeight:"200px",
+                maxHeight:"200px",
+                alignItems:"center",
+                justifyContent:"center",
+                textAlign:"center",
+                marginRight:"10px",
+                marginBottom:"10px",
+                backgroundColor:"#fff",
+                color:"#000",
+                padding: "15px 30px",
+                borderWidth:"1px",
+                borderStyle:"solid",
+                borderColor: "rgba(0,0,255,0.04)",
+                borderRadius: "20px",
+                fontWeight: "600"
+            }}>
+            <div style={{width:"100px"}}>
+            <img width={"100%"} src={`src/images/${item.split(" ")[0]}.jpg`}/>
+            </div>
+            <div>
+            {item}
+            <ExternalLink size={"13px"} color='grey' style={{marginLeft:"10px"}} />
+            </div>      
+            </div>
+            
 
-           return <div onMouseDown onMouseUp style={{
-             display:"flex",
-        flexDirection:"column",
-        flexWrap:"wrap",
-        maxWidth:"200px",
-        minWidth:"200px",
-        alignItems:"center",
-        justifyContent:"center",
-        textAlign:"center",
+        }
+        else if(index===4){
+            return <div style={{
+                textAlign:"center",
+                width:"100%",}}>
+                 
+            <button style={btnStyling} onMouseEnter={handleEnter} onMouseLeave={handleLeave} onClick={handleLoadMoreBtn} id='load-more-btn'>
+                {isClickedLoadMore?"Hide":"Show More"}
+            </button>
+            </div>
+        }
+        else{
+           return <div  style={{
+        //   display:"flex",
+          display:isClickedLoadMore?"flex":"none",
+         flexDirection:"column",
+         flexWrap:"wrap",
+         maxWidth:"200px",
+         minWidth:"200px",
+         minHeight:"200px",
+         maxHeight:"200px",
+         alignItems:"center",
+         justifyContent:"center",
+         textAlign:"center",
          marginRight:"10px",
-         marginBottom:"5px",
-         border:"0",
-         backgroundColor:"#edf1f6",
+         marginBottom:"10px",
+         backgroundColor:"#fff",
          color:"#000",
-         padding: "10px 15px",
+         padding: "15px 30px",
+         borderWidth:"1px",
+         borderStyle:"solid",
+         borderColor: "rgba(0,0,255,0.04)",
          borderRadius: "20px",
          fontWeight: "600"
 
            }} className='mutual-fund-house-name'>
+           
             <div style={{width:"100px"}}>
             <img width={"100%"} src={`src/images/${item.split(" ")[0]}.jpg`}/>
             </div>
-           {item}</div>
+            <div>
+           {item}
+           <ExternalLink size={"13px"} color='grey' style={{marginLeft:"10px"}} />
+           </div>
+           
+           </div>
+        }
         
         })
     )
