@@ -17,15 +17,20 @@ function App() {
   const [selectedNetAssetValue, setSelectedNetAssetValue] = useState("N/A"); // Default to N/A
   const [selectedDate, setSelectedDate] = useState("N/A"); // Default to N/A
 
+
   useEffect(() => {
     const fetchSheetData = async () => {
       const url =
-        "https://docs.google.com/spreadsheets/d/e/2PACX-1vSim2Rpu--HFaQNqok5YppWLlMsLN-Q-oReFT5h1VK10vq7ywkGrbbpQwZ3rcqQqtesmheZhIaG9V30/pub?output=csv";
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vRhBDjJOL4rMKQCggItcQ7eybW_lLlyDalj5JFlCOU1MFCB4zIC7vontb_SlS2bqiLaFOdHTcK1VzEL/pub?output=csv";
 
       try {
         const response = await fetch(url);
         const csvText = await response.text();
         const result = Papa.parse(csvText, { header: true });
+        // console.log(result.data.filter((item)=>{
+        //   return item["Net Asset Value"]!==""
+        // }
+        // ))
 
         // Filter rows where Scheme Code contains the word "Fund"
         const validData = result.data.filter(
@@ -44,11 +49,13 @@ function App() {
           .filter((name) => name);
 
         // Extract all Net Asset Values and Dates
-        const allData = result.data.map((row) => ({
-          name: row["Scheme Name"],
-          value: row["Net Asset Value"],
-          date: row["Date"],
-        }));
+        const allData = result.data.filter((item)=>{
+          return (
+            item["Net Asset Value"]!==""
+        )
+        }
+        )
+
 
         setData(validData); // Save all valid rows
         setSchemeCodes(schemeCodeOptions); // Save Scheme Code options
@@ -115,7 +122,7 @@ function App() {
       </div> */}
       <Header />
       <Features />
-      <MutualFund schemeCodes={schemeCodes} schemeNames={schemeNames}/>
+      <MutualFund schemeCodes={schemeCodes} schemeNames={schemeNames} netAssetValues = {netAssetValues}/>
 
     
       

@@ -3,16 +3,31 @@ import "./MutualFund.css"
 import { ExternalLink } from 'lucide-react';
 import { Search } from 'lucide-react';
 
-const MutualFund = ({schemeCodes,schemeNames}) => {
+const MutualFund = ({schemeCodes,schemeNames,netAssetValues}) => {
 
     const [btnStyling,setBtnStyling] = useState({});
     const [isClickedLoadMore,setIsClickedLoadMore] = useState(false);
-
-    const selectedValues = {
+    const [isClickedOnFundHouse,setIsClickedOnFundHouse] = useState(false);
+    const [externalLinkColor,setExternalLinkColor] = useState(false);
+    const [selectedFundHouse,setSelectedFundHouse] = useState("");
+    const [selectedFilter,setSelectedFilter] = useState("");
+    const [selectedValues,setSelectedValues] = useState({
         companyName:"",
-        category:""
-    };
+        filter:""
+    })    //stores the values  selected by user
+    const [filteredSchemeNames,setFilteredSchemeNames] = useState([]);
+    const [filteredNavValues,setFilteredNavValues] = useState([]);
+    const [inputValue,setInputValue] = useState("");
 
+    let arrayForNavFilteredValues = [];
+
+
+
+   
+   
+
+
+    //stores the values from scheme name column which include "Mutual Fund" text
    const filteredCodes = [];
    schemeCodes.forEach((item) => {
     if(!filteredCodes.includes(item.value) && item.value.includes("Mutual Fund")){
@@ -20,7 +35,8 @@ const MutualFund = ({schemeCodes,schemeNames}) => {
     }
    })
 
-   const filteredSchemeNames= [];
+   //made an array to store the values which maches the filter criteria when click on filters
+ 
 
    useEffect(()=>{
     setBtnStyling({
@@ -28,41 +44,115 @@ const MutualFund = ({schemeCodes,schemeNames}) => {
         border:"0",
         borderRadius: "10px",
         backgroundColor:"#edf1f6",
+        marginBottom:"5px"
     })
    },[])
 
+//    useEffect(()=>{
 
-   function handleEnter(e){
+//    },[selectedValues])
+
+
+   function handleEnterOnLoadMore(e){
         e.target.style.backgroundColor = "#d9d9d9"
    }
 
-    function handleLeave(e){
+    function handleLeaveOnLoadMore(e){
         e.target.style.backgroundColor = "#edf1f6"
         e.target.style.color = "#000";
    }
 
-   function handleLoadMoreBtn(e){
+   function handleClickOnLoadMoreBtn(e){
     e.target.style.backgroundColor = "#3446EC";
     e.target.style.color = "#fff";
     setIsClickedLoadMore((prev) => !prev);
    }
 
-   
-
    function handleClickOnFundHouse(e){
-    selectedValues.companyName = e.target.textContent;
-    console.log(selectedValues.companyName)
+    console.log(e.target.textContent)
+    setIsClickedOnFundHouse((prev) => !prev)
+    // e.target.style.backgroundColor = isClickedOnFundHouse?"#3446EC":"#fff";
+    // e.target.style.color = isClickedOnFundHouse?"#fff":"#000";
+    setExternalLinkColor((prev)=>!prev)
+    setSelectedValues({ 
+        companyName: e.target.textContent
+    })
+ 
+   }
+
+   function handleMouseEnterOnFundHouse(e){
+    e.target.style.border = "2px solid blue";
+    e.target.style.transform = "translateY(5px)"
+   }
+
+   function handleMouseLeaveOnFundHouse(e){
+    e.target.style.border = "1px solid rgba(0,0,255,0.1)";
+    e.target.style.transform = "translateY(0)"
    }
 
    function handleClickOnFilters(e){
-    selectedValues.category = e.target.textContent;
-    schemeNames.forEach((item)=>{
-        if(item.includes(selectedValues.companyName.split(" ")[0]) && item.includes(selectedValues.category.split(" ")[0])){
-            console.log(item)
-           filteredSchemeNames.push(item);
-        }
-    })
+    setSelectedValues((prev)=>({
+        ...prev,
+        filter:e.target.textContent
+    }))
    }
+
+
+   function handleClickOnShowDetails(e){
+   
+    console.log(selectedValues)
+
+    if(selectedValues.companyName && selectedValues.filter){
+        
+    
+   
+    const newFilteredSchemeNames = schemeNames.filter((item,index) => 
+    {
+        // arrayForNavFilteredValues = []
+        if(selectedValues.filter==="All Funds"){
+            if(item.includes(selectedValues.companyName.split(" ")[0]) &&
+            (!item.includes("Direct") && !item.includes("DIRECT"))){
+            arrayForNavFilteredValues.push(netAssetValues[index]["Net Asset Value"]);
+
+            return item
+        }
+    }
+        else{
+           if(item.includes(selectedValues.companyName.split(" ")[0]) &&
+            item.includes(selectedValues.filter.split(" ")[0]) && 
+            !item.includes("Direct") && !item.includes("DIRECT")){
+            arrayForNavFilteredValues.push(netAssetValues[index]["Net Asset Value"]);
+            return item;
+        }
+        }
+    });
+    setFilteredSchemeNames(newFilteredSchemeNames)
+}
+    else{
+        alert("Select all Values")
+    }
+
+    
+    setFilteredNavValues(arrayForNavFilteredValues);
+   }
+
+   function handleChangeOnInput(e){
+    setFilteredSchemeNames(filteredSchemeNames.filter((scheme)=>{
+        if(scheme.toLowerCase().includes(e.target.value)){
+            return scheme;
+        }
+    }))
+ 
+    
+   }
+
+//    useEffect(()=>{
+//     setSelectedValues({
+//         companyName:selectedFundHouse,
+//         filter:selectedFilter
+//     })
+//     console.log(selectedValues)
+//    },[selectedFundHouse,selectedFilter])
 
 //    filteredCodes && (
 //     filteredCodes.forEach((item) => {
@@ -107,7 +197,7 @@ const MutualFund = ({schemeCodes,schemeNames}) => {
     {
        filteredCodes && ( filteredCodes.map((item,index)=>{
         if(index<=3){
-            return <div onClick={handleClickOnFundHouse} style={{
+            return <div onMouseEnter={handleMouseEnterOnFundHouse} onMouseLeave={handleMouseLeaveOnFundHouse} onClick={handleClickOnFundHouse} style={{
                 display:"flex",
                 flexDirection:"column",
                 flexWrap:"wrap",
@@ -125,16 +215,17 @@ const MutualFund = ({schemeCodes,schemeNames}) => {
                 padding: "15px 30px",
                 borderWidth:"1px",
                 borderStyle:"solid",
-                borderColor: "rgba(0,0,255,0.04)",
+                borderColor: "rgba(0,0,255,0.1)",
                 borderRadius: "20px",
-                fontWeight: "600"
+                fontWeight: "600",
+                transition:"all 0.5s"
             }} className='mutual-fund-house-name'>
             <div style={{width:"100px"}}>
             <img width={"100%"} src={`src/images/${item.split(" ")[0]}.jpg`}/>
             </div>
-            <div style={{}}>
+            <div>
             {item}
-            <ExternalLink size={"13px"} color='grey' style={{marginLeft:"10px"}} />
+            <ExternalLink size={"13px"} style={{marginLeft:"10px",color:"inherit"}} />
             </div>      
             </div>
             
@@ -145,13 +236,13 @@ const MutualFund = ({schemeCodes,schemeNames}) => {
                 textAlign:"center",
                 width:"100%",}}>
                  
-            <button style={btnStyling} onMouseEnter={handleEnter} onMouseLeave={handleLeave} onClick={handleLoadMoreBtn} id='load-more-btn'>
+            <button style={btnStyling} onMouseEnter={handleEnterOnLoadMore} onMouseLeave={handleLeaveOnLoadMore} onClick={handleClickOnLoadMoreBtn} id='load-more-btn'>
                 {isClickedLoadMore?"Hide":"Show More"}
             </button>
             </div>
         }
         else{
-           return <div  style={{
+           return <div onMouseEnter={handleMouseEnterOnFundHouse} onMouseLeave={handleMouseLeaveOnFundHouse} onClick={handleClickOnFundHouse} style={{
           display:isClickedLoadMore?"flex":"none",
          flexDirection:"column",
          flexWrap:"wrap",
@@ -169,10 +260,10 @@ const MutualFund = ({schemeCodes,schemeNames}) => {
          padding: "15px 30px",
          borderWidth:"1px",
          borderStyle:"solid",
-         borderColor: "rgba(0,0,255,0.04)",
+         borderColor: "rgba(0,0,255,0.1)",
          borderRadius: "20px",
-         fontWeight: "600"
-
+         fontWeight: "600",
+         transition:"all 0.5s"
            }} className='mutual-fund-house-name'>
            
             <div style={{width:"100px"}}>
@@ -180,7 +271,7 @@ const MutualFund = ({schemeCodes,schemeNames}) => {
             </div>
             <div>
            {item}
-           <ExternalLink size={"13px"} color='grey' style={{marginLeft:"10px"}} />
+           <ExternalLink size={"13px"}  style={{marginLeft:"10px",color:"inherit"}} />
            </div>
            
            </div>
@@ -191,73 +282,69 @@ const MutualFund = ({schemeCodes,schemeNames}) => {
       }
     </div>
     <div id="mutual-funds-filters">
+        <h4 style={{marginBottom:"5px"}}>Select Type Of Mutual Fund</h4>
 
  
       <button onClick={handleClickOnFilters} className="filter all-funds-filter">All Funds</button>
       <button onClick={handleClickOnFilters} className="filter equity-filter">Equity</button>
       <button onClick={handleClickOnFilters} className="filter debt-filter">Debt</button>
       <button onClick={handleClickOnFilters} className="filter hybrid-filter">Hybrid</button>
+      <button onClick={handleClickOnFilters} className="filter goldtraded-filter">Gold Traded Fund</button>
+      <button onClick={handleClickOnFilters} className="filter largecap-filter">Large Cap</button>
+      <button onClick={handleClickOnFilters} className="filter midcap-filter">Mid Cap</button>
+      <button onClick={handleClickOnFilters} className="filter smallcap-filter">Small Cap</button>
+      <button onClick={handleClickOnFilters} className="filter flexicap-filter">Flexi Cap Fund</button>
+      <button onClick={handleClickOnFilters} className="filter multicap-filter">Multi Cap Fund Asset Allocation</button>
+      <button onClick={handleClickOnFilters} className="filter globalfund-filter">Global Funds</button>
+      <button onClick={handleClickOnFilters} className="filter etffund-filter">ETF Funds</button>
+      <button onClick={handleClickOnFilters} className="filter balancefund-filter">Balance Funds</button>
+      <button onClick={handleClickOnFilters} className="filter hybridfund-filter">Hybrid Funds</button>
+      <button onClick={handleClickOnFilters} className="filter valuefund-filter">Value Funds</button>
+      <button onClick={handleClickOnFilters} className="filter elssfund-filter">ELSS Funds</button>
+      
     <hr />
     </div>
+
+    
    <div id="applied-filters-container">
     <div>
-      <input id="mutual-fund-search" type="text" placeholder='Type "Axis Small Cap Fund" ' />
+        <button onClick={handleClickOnShowDetails} style={{padding:"10px 15px",border:"0",cursor:"pointer",borderRadius:"10px",marginTop:"5px",backgroundColor:"rgb(237, 241, 246)",marginBottom:"5px"}}>Show Details</button>
+      <input id="mutual-fund-search" type="text" placeholder='Type "Axis Small Cap Fund" '
+      onChange={handleChangeOnInput}/>
     </div>
   </div>
 
-  <div id='all-filters-container'>
-    <div id='left-side-filter'>Scheme Name</div>
+  <div style={{fontWeight:"bold"}} id='all-filters-container'>
+    <div  id='left-side-filter'>Scheme Name
+    </div>
     <div id="right-side-filters">
-        <div>1Y</div>
+        <div id='oneyear-nav'>Current Nav
+      
+        </div>
     </div>
   </div>
   <div id='mutual-fund-data-container'>
-        <div className="company-data">
-
         {
-        filteredSchemeNames && (
-            filteredSchemeNames.map((scheme)=>{
-             <div className='company-name'>
-                <h4>{scheme}</h4>
+       filteredSchemeNames.length>0?(
+        filteredSchemeNames.map((scheme,index)=>{
+           
+            return <div key={index} style={{padding: "10px 0px 10px 20px"}} className='company-data'>
+            <h4 style={{fontWeight:"500"}}>{scheme}</h4>
+            <div id="one-year-return-container">
+            <div className='oneyr-return'>
+                    {filteredNavValues[index]}
+                </div>
             </div>
-            })
-        )
-    }
-    </div>
- 
-            {/* <div className='company-name'>
-                <h4>Axis Bank Small Cap Mutual Fund</h4>
-            </div>
-            <div className='returns'>
-                <div>20%</div>
-            </div>
-        </div>
-        <div className="company-data">
-            <div className='company-name'>
-                <h4>HDFC Mid-Cap Opportunities Direct Plan-Growth</h4>
-            </div>
-            <div className='returns'>
-                <div>20%</div>
-            </div>
-        </div>
-        <div className="company-data">
-            <div className='company-name'>
-                <h4>Motilal Oswal Midcap Fund Direct-Growth</h4>
-            </div>
-            <div className='returns'>
-                <div>20%</div>
-            </div>
-        </div>
-        <div className="company-data">
-            <div className='company-name'>
-                <h4>Invesco India Mid Cap Fund Direct-Growth</h4>
-            </div>
-            <div className='returns'>
-                <div>20%</div>
-            </div>
-        </div> */}
-  </div>
 
+            </div>
+            
+          
+        })
+       ):<p>No Schemes found with selected criteria</p>            
+}
+   
+    </div>
+        
   </div>
   )
 }
