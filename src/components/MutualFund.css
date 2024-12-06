@@ -1,8 +1,16 @@
+html{
+  scroll-behavior: smooth;
+}
+
+:root{
+  --width:100px
+}
+
 
 #mututal-funds-container {
     display: flex;
     flex-direction: column;
-    width: 90%;
+    width: 100%;
     margin: 0 auto 20px auto;
     border:1px solid rgba(0, 0, 0, 0.219);
     /* height: 3; */
@@ -24,16 +32,17 @@
     margin-right: 10px;
     font-weight: 600;
     margin-bottom: 5px;
+    transition:all 0.2s;
   }
 
   .filter:hover{
     cursor: pointer;
   }
 
-  .filter:focus{
+  /* .filter:focus{
     background-color: #3446EC;
     color: #fff;
-  }
+  } */
   
   #mutual-funds-filters>hr{
     margin-top: 10px;
@@ -62,7 +71,7 @@
     align-items: center;
     background-color:#edf1f6 ;
     margin-top: 10px;
-    padding: 10px 10px 10px 20px;
+    padding: 10px 0px 10px 0px;
     border-radius: 10px;
   }
 
@@ -70,7 +79,9 @@
 #right-side-filters{
   /* width: 20%; */
   display: flex;
-  gap: 50px;
+  gap: 5vw;
+  text-align: right;
+  
 }
 
 
@@ -90,8 +101,8 @@
  justify-content: space-between;
  border-bottom: 2px dashed #000;
 font-weight: 500;
-
-
+gap: 10px;
+padding: 20px 0 20px 20px;
 }
 
 #oneyr-return-container{
@@ -103,11 +114,12 @@ font-weight: 500;
 #oneyear-nav{
   display: flex;
   flex-direction: column;
+  width: var(--width);
 }
 
 .oneyr-return{
  
-  padding: 10px 10px 10px 20px;
+  /* padding: 10px 10px 10px 20px; */
 }
 
 #mutual-fund-house-container{
@@ -119,27 +131,7 @@ margin-top: 5px;
 overflow: hidden;
 }
 
-/* .mutual-fund-house-name{
-  padding: 10px;
-  margin-right: 10px;
-  margin-bottom: 5px;
-  border: 0;
-  background-color: #edf1f6;
-  color: #000;
-  padding: 10px 15px;
-  border-radius: 20px;
-  margin-right: 10px;
-  font-weight: 600;
-} */
-
-
-.mutual-fund-house-name:hover{
-  background-color: #3446EC;
-  color: #fff;
-}
-
-
-.mutual-fund-house-name:hover{
+.mutual-fund-name:hover{
   cursor: pointer;
 }
 
@@ -154,4 +146,75 @@ overflow: hidden;
   background-color: rgb(211, 27, 27);
 }
 
+.loader{
+  border-radius:"50%";
+  width:"50px";
+  height:"50px";
+  border-top:"2px solid black"
+}
+
+
+
+#container{
+  display:flex;
+  
+}
+#Scheme-Name{
+  display:flex;
+  flex-direction:column;
+  width:40%;
+}
+
+#Current-Nav{
+  display:flex;
+  flex-direction:column;
+  width:20%;
+  height:500px;
+}
+
+#oneY-Return{
+  display:flex;
+  flex-direction:column;
+  width:20%;
+  height:500px;
+}
+
+#twoY-Return{
+  display:flex;
+  flex-direction:column;
+  width:20%;
+  height:500px;
+}
+
+#fiveY-Return{
+  display:flex;
+  flex-direction:column;
+  width:10%;
+  height:500px;
+}
+
+
+@keyframes loading {
+ 0% {
+     transform: rotate(0deg);
+ }
+ 100%{
+  transform: rotate(360deg);
+ }
+}
+
+@media (max-width: 400px){
+  #all-filters-container{
+    font-size: 11px;
+    padding: 10px 2px 10px 2px;
+  }
+  #mutual-fund-data-container{
+    font-size: 12px;
+  }
+ 
+  .company-data{
+    padding-left: 0px;
+  }
+
+}
 
