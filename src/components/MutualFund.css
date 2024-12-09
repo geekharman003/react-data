@@ -2,9 +2,6 @@ html{
   scroll-behavior: smooth;
 }
 
-:root{
-  --width:100px
-}
 
 
 #mututal-funds-container {
@@ -114,7 +111,6 @@ padding: 20px 0 20px 20px;
 #oneyear-nav{
   display: flex;
   flex-direction: column;
-  width: var(--width);
 }
 
 .oneyr-return{

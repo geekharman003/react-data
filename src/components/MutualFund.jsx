@@ -4,10 +4,10 @@ import { ExternalLink } from 'lucide-react';
 import { Search } from 'lucide-react';
 
 
-const MutualFund = ({schemeCodes,schemeNames,netAssetValues}) => {
+const MutualFund = ({schemeCodes,schemeNames,netAssetValues,AdityaBirlaElssFunds,AllElssFunds}) => {
 
     const FundHouseRefs = useRef([]);
-    const FiltersRef = useRef(null)
+    const FiltersRef = useRef()
     const [btnStyling,setBtnStyling] = useState({});
     const [isClickedLoadMore,setIsClickedLoadMore] = useState(false);
     const [isClickedOnFundHouse,setIsClickedOnFundHouse] = useState(false);
@@ -21,10 +21,16 @@ const MutualFund = ({schemeCodes,schemeNames,netAssetValues}) => {
     const [filteredSchemeNames,setFilteredSchemeNames] = useState([]);
     const [filteredNavValues,setFilteredNavValues] = useState([]);
     const [isClickedOnFilter,setIsClickedOnFilter] = useState(false)
-
+    const [oneYearNav,setOneYearNav] = useState([]);
+    const [threeYearNav,setTheeYearNav] = useState([]);
+    const [fiveYearNav,setFiveYearNav] = useState([]);
+    
 
     //made an array to store filtered nav values
     let arrayForNavFilteredValues = [];
+    let arrayForOneYearNav = []
+    let arrayForThreeYearNav = [];
+    let arrayForFiveYearNav = [];
 
 
     //stores the values from scheme code column which include "Mutual Fund" text
@@ -44,6 +50,13 @@ const MutualFund = ({schemeCodes,schemeNames,netAssetValues}) => {
         backgroundColor:"#edf1f6",
         marginBottom:"5px"
     })
+
+
+    setTimeout(() => {
+    
+        // console.log(AllElssFunds.axisbank[6]["Scheme Type"])
+    }, 10000);
+    
    },[])
 
 
@@ -71,36 +84,48 @@ function handleClickOnLoadMoreBtn(e){
 
 
    //fund house
+
+   const checkIfAnyValueIsClicked = (item) => {
+    if(item.style.backgroundColor === "rgb(237, 241, 246)"){
+        item.style.backgroundColor = "#fff";
+        item.style.border = "1px solid rgba(0,0,255,0.05)"
+    }
+   }
+
    
    function handleClickOnFundHouse(index,e){
 
+    FundHouseRefs.current.some(checkIfAnyValueIsClicked);
+    FundHouseRefs.current[index].style.backgroundColor = "#edf1f6";
+    FundHouseRefs.current[index].style.border = "1px solid #245FE5"
     setIsClickedOnFundHouse((prev) => !prev)
-    //   FundHouseRefs.current[index].style.backgroundColor = isClickedOnFundHouse?"#e6ae15":"#fff"
     setExternalLinkColor((prev)=>!prev)
     setSelectedValues({ 
         companyName: e.target.textContent
     })
     let MutualFundPositions = FundHouseRefs.current[index].getBoundingClientRect();
     let filterPositions = FiltersRef.current.getBoundingClientRect();
-    console.log(MutualFundPositions.y,filterPositions.y)
+    // console.log(MutualFundPositions.y,filterPositions.y)
     window.scrollBy(0,filterPositions.y-MutualFundPositions.y)
    }
 
    function handleMouseEnterOnFundHouse(index){
-    FundHouseRefs.current[index].style.backgroundColor = "#edf1f6";
-    FundHouseRefs.current[index].style.border = "1px solid #245FE5"
-     FundHouseRefs.current[index].style.transform = "translateY(5px)"
+    // FundHouseRefs.current[index].style.backgroundColor = "#edf1f6";
+    // FundHouseRefs.current[index].style.border = "1px solid #245FE5"
+    //  FundHouseRefs.current[index].style.transform = "translateY(5px)"
     //     e.style.border = "1px solid blue";
     //     e.style.transform = "translateY(5px)";
     //   }
    }
 
    function handleMouseLeaveOnFundHouse(index){
-    FundHouseRefs.current[index].style.backgroundColor = "#fff";
-    FundHouseRefs.current[index].style.border = "1px solid rgba(0,0,255,0.05)"
-    FundHouseRefs.current[index].style.transform = "translateY(0px)"
+    // FundHouseRefs.current[index].style.backgroundColor = "#fff";
+    // FundHouseRefs.current[index].style.border = "1px solid rgba(0,0,255,0.05)"
+    // FundHouseRefs.current[index].style.transform = "translateY(0px)"
    }
 
+
+   
 
    //filters
 
@@ -128,10 +153,6 @@ function handleClickOnLoadMoreBtn(e){
    
     console.log(selectedValues.companyName)
 
-    
-        
-    
-   
     const newFilteredSchemeNames = schemeNames.filter((item,index) => 
     {
         // arrayForNavFilteredValues = []
@@ -143,6 +164,41 @@ function handleClickOnLoadMoreBtn(e){
             return item;
         }
     }
+    else if(selectedValues.companyName==="Aditya Birla Sun Life Mutual Fund"){{
+        if(selectedValues.filter==="ELSS Funds"){
+            // if(item.includes(selectedValues.companyName.split(" ")[0]) &&
+            // item.includes(selectedValues.filter.split(" ")[0]) && 
+            // !item.includes("Direct") && !item.includes("DIRECT")){
+            //     setOneYearNav(AdityaBirlaElssFunds[3]._2);
+            // return item;
+            // }
+            if(item === AdityaBirlaElssFunds[6]._3 || item === AdityaBirlaElssFunds[6]._8){
+                arrayForNavFilteredValues.push(netAssetValues[index]["Net Asset Value"]);
+
+                arrayForOneYearNav.push(AllElssFunds.adityabirla[3]._2);
+                arrayForOneYearNav.push(AllElssFunds.adityabirla[3]._7);
+                arrayForThreeYearNav.push(AllElssFunds.adityabirla[3]._3);
+                arrayForThreeYearNav.push(AllElssFunds.adityabirla[3]._8);
+                arrayForFiveYearNav.push(AllElssFunds.adityabirla[3]._4);
+                arrayForFiveYearNav.push(AllElssFunds.adityabirla[3]._9);
+
+                return item;
+            }
+        }
+    }
+
+    }
+
+    else if(selectedValues.companyName === "Axis Mutual Fund"){
+        if(selectedValues.filter === "ELSS Funds"){
+            if(item === AllElssFunds.axisbank[6]["Scheme Type"] || item === AllElssFunds.axisbank[6]._3){
+                arrayForNavFilteredValues.push(netAssetValues[index]["Net Asset Value"]);
+                arrayForOneYearNav.push(AllElssFunds.adityabirla[3]._2);
+            }
+        }
+    }
+
+
          else if(selectedValues.filter === "Top Funds of All Categories"){
             if(item.includes("Motilal") && item.includes("ELSS") && item.includes("Growth") && !item.includes("Direct")){
             arrayForNavFilteredValues.push(netAssetValues[index]["Net Asset Value"])
@@ -168,6 +224,9 @@ function handleClickOnLoadMoreBtn(e){
     });
     setFilteredSchemeNames(newFilteredSchemeNames)
     setFilteredNavValues(arrayForNavFilteredValues);
+    setOneYearNav(arrayForOneYearNav)
+    setTheeYearNav(arrayForThreeYearNav)
+    setFiveYearNav(arrayForFiveYearNav)
    }
 
    function HandleMouseEnterOnShowDetails(e){
@@ -180,11 +239,18 @@ function handleClickOnLoadMoreBtn(e){
    }
 
    function handleChangeOnInput(e){
-    setFilteredSchemeNames(filteredSchemeNames.filter((scheme)=>{
-        if(scheme.toLowerCase().includes(e.target.value)){
-            return scheme;
+    // setFilteredSchemeNames(filteredSchemeNames.filter((scheme)=>{
+    //     if(scheme.toLowerCase().includes(e.target.value)){
+    //         return scheme;
+    //     }
+    // }))
+    console.log(e.target.value)
+    filteredCodes.filter((item) => {
+        if(item.toLowerCase().includes(e.target.value)){
+            return item;
         }
-    }))
+    
+    })
  
     
    }
@@ -235,6 +301,7 @@ function handleClickOnLoadMoreBtn(e){
     <h3>Mutual Funds</h3>
     <br />
     <h4>Select Mutual Fund House</h4>
+    <input onChange={handleChangeOnInput}  type="text" placeholder='Enter Fund House Name' style={{width:"50%",padding:"5px",border:"1px solid black",borderRadius:"5px",outline:"none"}}/>
     <div id='mutual-fund-house-container'>
      <div style={{display:filteredCodes.length>0?"none":"flex",flexDirection:"column",alignItems:"center",width:"100%",margin:"10px 0"}}>
         <div id="loader" style={{borderRadius:"50%",width:"50px",height:"50px",borderTop:"2px solid black",animationName:"loading",animationDuration:"1s",animationIterationCount:"infinite",
@@ -256,10 +323,10 @@ function handleClickOnLoadMoreBtn(e){
                 display:"flex",
                 flexDirection:"column",
                 flexWrap:"wrap",
-                maxWidth:"200px",
-                minWidth:"200px",
-                minHeight:"200px",
-                maxHeight:"200px",
+                maxWidth:"150px",
+                minWidth:"150px",
+                minHeight:"100px",
+                maxHeight:"100px",
                 alignItems:"center",
                 justifyContent:"center",
                 textAlign:"center",
@@ -273,9 +340,9 @@ function handleClickOnLoadMoreBtn(e){
                 fontWeight: "600",
                 transition:"all 0.5s"
             }} className='mutual-fund-house-name'>
-            <div style={{width:"100px"}}>
+        {/*<div style={{width:"100px"}}>
             <img width={"100%"} src={`src/images/${item.split(" ")[0]}.jpg`}/>
-            </div>
+            </div>*/}
             <div className='mutual-fund-name'>
             {item}
             <ExternalLink size={"13px"} style={{marginLeft:"10px",color:"inherit"}} />
@@ -308,10 +375,10 @@ function handleClickOnLoadMoreBtn(e){
          display:isClickedLoadMore?"flex":"none",
          flexDirection:"column",
          flexWrap:"wrap",
-         maxWidth:"200px",
-         minWidth:"200px",
-         minHeight:"200px",
-         maxHeight:"200px",
+         maxWidth:"150px",
+         minWidth:"150px",
+         minHeight:"100px",
+         maxHeight:"100px",
          alignItems:"center",
          justifyContent:"center",
          textAlign:"center",
@@ -328,9 +395,9 @@ function handleClickOnLoadMoreBtn(e){
          transition:"all 0.5s"
            }} className='mutual-fund-house-name'>
            
-            <div style={{width:"100px"}}>
+            {/* <div style={{width:"100px"}}>
             <img width={"100%"} src={`src/images/${item.split(" ")[0]}.jpg`}/>
-            </div>
+            </div> */}
             <div className='mutual-fund-name'>
            {item}
            <ExternalLink size={"13px"}  style={{marginLeft:"10px",color:"inherit"}} />
@@ -342,11 +409,11 @@ function handleClickOnLoadMoreBtn(e){
 
       }
     </div>
-    <div id="mutual-funds-filters" ref={FiltersRef}>
+    <div id="mutual-funds-filters">
         <h4 style={{marginBottom:"5px"}}>Select Type Of Mutual Fund</h4>
 
  
-      <button onMouseEnter={HandleMouseEnterOnFilters} onMouseLeave={HandleMouseLeaveOnFilters}  onClick={handleClickOnFilters} className="filter all-funds-filter">All Funds</button>
+      <button onMouseEnter={HandleMouseEnterOnFilters} onMouseLeave={HandleMouseLeaveOnFilters}  onClick={handleClickOnFilters} className="filter all-funds-filter" ref={FiltersRef.current}>All Funds</button>
       <button  onMouseEnter={HandleMouseEnterOnFilters} onMouseLeave={HandleMouseLeaveOnFilters} onClick={handleClickOnFilters} className="filter equity-filter">Equity</button>
       <button  onMouseEnter={HandleMouseEnterOnFilters} onMouseLeave={HandleMouseLeaveOnFilters} onClick={handleClickOnFilters} className="filter debt-filter">Debt</button>
       <button  onMouseEnter={HandleMouseEnterOnFilters} onMouseLeave={HandleMouseLeaveOnFilters} onClick={handleClickOnFilters} className="filter hybrid-filter">Hybrid</button>
@@ -388,18 +455,18 @@ function handleClickOnLoadMoreBtn(e){
             <h4 style={{fontWeight:"500",width:"40%"}}>{scheme}</h4>
             <div className='right-side-company-data' style={{display:"flex",gap:"9vw"}}>
             <div id="one-year-return-container">
-            <div className='oneyr-return' style={{width:"91px",textAlign:"right"}}>
+            <div className='oneyr-return' style={{textAlign:"right"}}>
                     {filteredNavValues[index]}
                 </div>
             </div>
             <div>
-                <p>22.6</p>
+                <p>{oneYearNav[index]?oneYearNav[index]:"N/A"}</p>
             </div>
             <div>
-                <p>3.8</p>
+                <p>{threeYearNav[index]?threeYearNav[index]:"N/A"}</p>
             </div>
             <div>
-               <p>10</p>
+               <p>{fiveYearNav[index]?fiveYearNav[index]:"N/A"}</p>
             </div>
             </div>
 
