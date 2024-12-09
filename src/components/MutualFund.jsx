@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState,useRef } from 'react'
 import "./MutualFund.css"
 import { ExternalLink } from 'lucide-react';
@@ -7,7 +8,7 @@ import { Search } from 'lucide-react';
 const MutualFund = ({schemeCodes,schemeNames,netAssetValues,AdityaBirlaElssFunds,AllElssFunds}) => {
 
     const FundHouseRefs = useRef([]);
-    const FiltersRef = useRef()
+    const FiltersRef = useRef();
     const [btnStyling,setBtnStyling] = useState({});
     const [isClickedLoadMore,setIsClickedLoadMore] = useState(false);
     const [isClickedOnFundHouse,setIsClickedOnFundHouse] = useState(false);
@@ -20,6 +21,7 @@ const MutualFund = ({schemeCodes,schemeNames,netAssetValues,AdityaBirlaElssFunds
     })    //stores the values  selected by user
     const [filteredSchemeNames,setFilteredSchemeNames] = useState([]);
     const [filteredNavValues,setFilteredNavValues] = useState([]);
+    const [filteredCodes,setFilteredCodes] = useState([]);
     const [isClickedOnFilter,setIsClickedOnFilter] = useState(false)
     const [oneYearNav,setOneYearNav] = useState([]);
     const [threeYearNav,setTheeYearNav] = useState([]);
@@ -34,13 +36,17 @@ const MutualFund = ({schemeCodes,schemeNames,netAssetValues,AdityaBirlaElssFunds
 
 
     //stores the values from scheme code column which include "Mutual Fund" text
-   const filteredCodes = [];
-   schemeCodes.forEach((item) => {
-    if(!filteredCodes.includes(item.value) && item.value.includes("Mutual Fund")){
-        filteredCodes.push(item.value)
+   let arrayForFilteredCodes = []; 
+ schemeCodes.forEach((item) => {
+    if(!arrayForFilteredCodes.includes(item.value) && item.value.includes("Mutual Fund")){
+        arrayForFilteredCodes.push(item.value)
     }
    })
- 
+
+   useEffect(()=>{
+    setFilteredCodes(arrayForFilteredCodes)
+   // eslint-disable-next-line react-hooks/exhaustive-deps
+   },[schemeCodes])
 
    useEffect(()=>{
     setBtnStyling({
@@ -51,10 +57,10 @@ const MutualFund = ({schemeCodes,schemeNames,netAssetValues,AdityaBirlaElssFunds
         marginBottom:"5px"
     })
 
-
     setTimeout(() => {
     
         // console.log(AllElssFunds.axisbank[6]["Scheme Type"])
+        console.log(schemeCodes)
     }, 10000);
     
    },[])
@@ -86,7 +92,8 @@ function handleClickOnLoadMoreBtn(e){
    //fund house
 
    const checkIfAnyValueIsClicked = (item) => {
-    if(item.style.backgroundColor === "rgb(237, 241, 246)"){
+    // console.log(item)
+    if(item && item.style.backgroundColor === "rgb(237, 241, 246)"){
         item.style.backgroundColor = "#fff";
         item.style.border = "1px solid rgba(0,0,255,0.05)"
     }
@@ -95,9 +102,10 @@ function handleClickOnLoadMoreBtn(e){
    
    function handleClickOnFundHouse(index,e){
 
-    FundHouseRefs.current.some(checkIfAnyValueIsClicked);
+    FundHouseRefs.current.forEach(checkIfAnyValueIsClicked);
     FundHouseRefs.current[index].style.backgroundColor = "#edf1f6";
     FundHouseRefs.current[index].style.border = "1px solid #245FE5"
+   
     setIsClickedOnFundHouse((prev) => !prev)
     setExternalLinkColor((prev)=>!prev)
     setSelectedValues({ 
@@ -244,16 +252,20 @@ function handleClickOnLoadMoreBtn(e){
     //         return scheme;
     //     }
     // }))
-    console.log(e.target.value)
-    filteredCodes.filter((item) => {
+    // console.log(e.target.value)
+    // console.log(e.key)
+    setFilteredCodes(filteredCodes.filter((item) => {
         if(item.toLowerCase().includes(e.target.value)){
             return item;
         }
-    
-    })
- 
-    
+    }))
    }
+
+function handleBackspace(e){
+   if(e.key === "Backspace"){
+    setFilteredCodes(arrayForFilteredCodes)
+   }
+}
 
 //    useEffect(()=>{
 //     setSelectedValues({
@@ -301,9 +313,9 @@ function handleClickOnLoadMoreBtn(e){
     <h3>Mutual Funds</h3>
     <br />
     <h4>Select Mutual Fund House</h4>
-    <input onChange={handleChangeOnInput}  type="text" placeholder='Enter Fund House Name' style={{width:"50%",padding:"5px",border:"1px solid black",borderRadius:"5px",outline:"none"}}/>
+    <input onChange={handleChangeOnInput} onKeyDown={handleBackspace}  type="text" placeholder='Enter Fund House Name' style={{width:"50%",padding:"5px",border:"1px solid black",borderRadius:"5px",outline:"none"}}/>
     <div id='mutual-fund-house-container'>
-     <div style={{display:filteredCodes.length>0?"none":"flex",flexDirection:"column",alignItems:"center",width:"100%",margin:"10px 0"}}>
+     <div style={{display:arrayForFilteredCodes.length>0?"none":"flex",flexDirection:"column",alignItems:"center",width:"100%",margin:"10px 0"}}>
         <div id="loader" style={{borderRadius:"50%",width:"50px",height:"50px",borderTop:"2px solid black",animationName:"loading",animationDuration:"1s",animationIterationCount:"infinite",
         animationTimingFunction:"linear"
         }}></div>
@@ -409,11 +421,11 @@ function handleClickOnLoadMoreBtn(e){
 
       }
     </div>
-    <div id="mutual-funds-filters">
+    <div id="mutual-funds-filters" ref={FiltersRef}>
         <h4 style={{marginBottom:"5px"}}>Select Type Of Mutual Fund</h4>
 
  
-      <button onMouseEnter={HandleMouseEnterOnFilters} onMouseLeave={HandleMouseLeaveOnFilters}  onClick={handleClickOnFilters} className="filter all-funds-filter" ref={FiltersRef.current}>All Funds</button>
+      <button onMouseEnter={HandleMouseEnterOnFilters} onMouseLeave={HandleMouseLeaveOnFilters}  onClick={handleClickOnFilters} className="filter all-funds-filter" >All Funds</button>
       <button  onMouseEnter={HandleMouseEnterOnFilters} onMouseLeave={HandleMouseLeaveOnFilters} onClick={handleClickOnFilters} className="filter equity-filter">Equity</button>
       <button  onMouseEnter={HandleMouseEnterOnFilters} onMouseLeave={HandleMouseLeaveOnFilters} onClick={handleClickOnFilters} className="filter debt-filter">Debt</button>
       <button  onMouseEnter={HandleMouseEnterOnFilters} onMouseLeave={HandleMouseLeaveOnFilters} onClick={handleClickOnFilters} className="filter hybrid-filter">Hybrid</button>
@@ -479,6 +491,7 @@ function handleClickOnLoadMoreBtn(e){
    
     </div>
   </div>
+
   )
 }
 
