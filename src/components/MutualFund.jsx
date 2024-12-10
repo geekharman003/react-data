@@ -5,7 +5,7 @@ import { ExternalLink } from 'lucide-react';
 import { Search } from 'lucide-react';
 
 
-const MutualFund = ({schemeCodes,schemeNames,netAssetValues,AdityaBirlaElssFunds,AllElssFunds}) => {
+const MutualFund = ({schemeCodes,schemeNames,netAssetValues,AdityaBirlaElssFunds,AllElssFunds,TopFundsObject,allData}) => {
 
     const FundHouseRefs = useRef([]);
     const FiltersRef = useRef();
@@ -26,6 +26,10 @@ const MutualFund = ({schemeCodes,schemeNames,netAssetValues,AdityaBirlaElssFunds
     const [oneYearNav,setOneYearNav] = useState([]);
     const [threeYearNav,setTheeYearNav] = useState([]);
     const [fiveYearNav,setFiveYearNav] = useState([]);
+    const [topFunds,setTopFunds]  = useState([]);
+    const [oneYearReturn,setOneYearReturn] = useState([])
+    const [threeYearReturn,setThreeYearReturn] = useState([])
+    const [fiveYearReturn,setFiveYearReturn] = useState([])
     
 
     //made an array to store filtered nav values
@@ -33,6 +37,36 @@ const MutualFund = ({schemeCodes,schemeNames,netAssetValues,AdityaBirlaElssFunds
     let arrayForOneYearNav = []
     let arrayForThreeYearNav = [];
     let arrayForFiveYearNav = [];
+    let arrayForOneYearReturn = [];
+     let arrayForThreeYearReturn = [];
+    let arrayForFiveYearReturn = [];
+     allData.forEach((item)=>{
+        arrayForOneYearReturn.push(item["1 yr Return"])
+    })
+
+    allData.forEach((item)=>{
+        arrayForThreeYearReturn.push(item["3 yr Return"])
+    })
+
+    allData.forEach((item)=>{
+        arrayForFiveYearReturn.push(item["5 yr Return"])
+    })
+    
+
+    useEffect(()=>{
+setOneYearReturn(arrayForOneYearReturn);
+    },[allData])
+
+    useEffect(()=>{
+        setThreeYearReturn(arrayForThreeYearReturn);
+    },[allData])
+
+    useEffect(()=>{
+    setFiveYearReturn(arrayForFiveYearReturn);
+    },[allData])
+
+
+
 
 
     //stores the values from scheme code column which include "Mutual Fund" text
@@ -42,6 +76,19 @@ const MutualFund = ({schemeCodes,schemeNames,netAssetValues,AdityaBirlaElssFunds
         arrayForFilteredCodes.push(item.value)
     }
    })
+
+   let arrayForTopFunds = [];
+  TopFundsObject.forEach((item)=>{
+    if(!arrayForTopFunds.includes(item["Top Funds"])){
+        arrayForTopFunds.push(item["Top Funds"])
+    }
+  })
+
+  useEffect(()=>{
+    setTopFunds(arrayForTopFunds)
+  },[TopFundsObject])
+
+
 
    useEffect(()=>{
     setFilteredCodes(arrayForFilteredCodes)
@@ -56,17 +103,7 @@ const MutualFund = ({schemeCodes,schemeNames,netAssetValues,AdityaBirlaElssFunds
         backgroundColor:"#edf1f6",
         marginBottom:"5px"
     })
-
-    setTimeout(() => {
-    
-        // console.log(AllElssFunds.axisbank[6]["Scheme Type"])
-        console.log(schemeCodes)
-    }, 10000);
-    
    },[])
-
-
-
 
 
 
@@ -138,6 +175,10 @@ function handleClickOnLoadMoreBtn(e){
    //filters
 
    function handleClickOnFilters(e){
+    // console.log(TopFunds)
+    // if(selectedValues.filter === "Top Funds of All Categories"){
+    //     setFilteredSchemeNames(TopFunds)
+    // }
     setIsClickedOnFilter((prev)=>!prev)
     // e.target.style.backgroundColor = isClickedOnFilter?"#245FE5":"#edf1f6"
     // e.target.style.color = isClickedOnFilter?"#fff":"#000"
@@ -158,8 +199,9 @@ function handleClickOnLoadMoreBtn(e){
    }
 
    function handleClickOnShowDetails(e){
-   
+    
     console.log(selectedValues.companyName)
+    console.log(selectedValues.filter)
 
     const newFilteredSchemeNames = schemeNames.filter((item,index) => 
     {
@@ -172,60 +214,60 @@ function handleClickOnLoadMoreBtn(e){
             return item;
         }
     }
-    else if(selectedValues.companyName==="Aditya Birla Sun Life Mutual Fund"){{
-        if(selectedValues.filter==="ELSS Funds"){
-            // if(item.includes(selectedValues.companyName.split(" ")[0]) &&
-            // item.includes(selectedValues.filter.split(" ")[0]) && 
-            // !item.includes("Direct") && !item.includes("DIRECT")){
-            //     setOneYearNav(AdityaBirlaElssFunds[3]._2);
-            // return item;
-            // }
-            if(item === AdityaBirlaElssFunds[6]._3 || item === AdityaBirlaElssFunds[6]._8){
-                arrayForNavFilteredValues.push(netAssetValues[index]["Net Asset Value"]);
-
-                arrayForOneYearNav.push(AllElssFunds.adityabirla[3]._2);
-                arrayForOneYearNav.push(AllElssFunds.adityabirla[3]._7);
-                arrayForThreeYearNav.push(AllElssFunds.adityabirla[3]._3);
-                arrayForThreeYearNav.push(AllElssFunds.adityabirla[3]._8);
-                arrayForFiveYearNav.push(AllElssFunds.adityabirla[3]._4);
-                arrayForFiveYearNav.push(AllElssFunds.adityabirla[3]._9);
-
-                return item;
-            }
-        }
-    }
-
-    }
-
-    else if(selectedValues.companyName === "Axis Mutual Fund"){
-        if(selectedValues.filter === "ELSS Funds"){
-            if(item === AllElssFunds.axisbank[6]["Scheme Type"] || item === AllElssFunds.axisbank[6]._3){
-                arrayForNavFilteredValues.push(netAssetValues[index]["Net Asset Value"]);
-                arrayForOneYearNav.push(AllElssFunds.adityabirla[3]._2);
-            }
-        }
-    }
-
-
-         else if(selectedValues.filter === "Top Funds of All Categories"){
-            if(item.includes("Motilal") && item.includes("ELSS") && item.includes("Growth") && !item.includes("Direct")){
+    else if(selectedValues.filter === "Top Funds of All Categories"){
+        
+        if(topFunds.includes(item)){
             arrayForNavFilteredValues.push(netAssetValues[index]["Net Asset Value"])
             return item;
         }
-        else if(item.includes("JM") && item.includes("ELSS") && item.includes("Growth") && !item.includes("Direct")){
-            arrayForNavFilteredValues.push(netAssetValues[index]["Net Asset Value"])
-            return item;
         }
-        else if(item.includes("SBI") && item.includes("LONG") && item.includes("EQUITY")  && item.includes("GROWTH") && !item.includes("Direct") && !item.includes("DIRECT")){
-            arrayForNavFilteredValues.push(netAssetValues[index]["Net Asset Value"])
-            return item;
-        }
-    }
+    
+//     else if(selectedValues.companyName==="Aditya Birla Sun Life Mutual Fund"){{
+//         if(selectedValues.filter==="ELSS Funds"){
+//             // if(item.includes(selectedValues.companyName.split(" ")[0]) &&
+//             // item.includes(selectedValues.filter.split(" ")[0]) && 
+//             // !item.includes("Direct") && !item.includes("DIRECT")){
+//             //     setOneYearNav(AdityaBirlaElssFunds[3]._2);
+//             // return item;
+//             // }
+//             if(item === AdityaBirlaElssFunds[6]._3 || item === AdityaBirlaElssFunds[6]._8){
+//                 arrayForNavFilteredValues.push(netAssetValues[index]["Net Asset Value"]);
+
+//                 arrayForOneYearNav.push(AllElssFunds.adityabirla[3]._2);
+//                 arrayForOneYearNav.push(AllElssFunds.adityabirla[3]._7);
+//                 arrayForThreeYearNav.push(AllElssFunds.adityabirla[3]._3);
+//                 arrayForThreeYearNav.push(AllElssFunds.adityabirla[3]._8);
+//                 arrayForFiveYearNav.push(AllElssFunds.adityabirla[3]._4);
+//                 arrayForFiveYearNav.push(AllElssFunds.adityabirla[3]._9);
+
+//                 return item;
+//             }
+//         }
+//     }
+
+// }
+
+    //      else if(selectedValues.filter === "Top Funds of All Categories"){
+    //         if(item.includes("Motilal") && item.includes("ELSS") && item.includes("Growth") && !item.includes("Direct")){
+    //         arrayForNavFilteredValues.push(netAssetValues[index]["Net Asset Value"])
+    //         return item;
+    //     }
+    //     else if(item.includes("JM") && item.includes("ELSS") && item.includes("Growth") && !item.includes("Direct")){
+    //         arrayForNavFilteredValues.push(netAssetValues[index]["Net Asset Value"])
+    //         return item;
+    //     }
+    //     else if(item.includes("SBI") && item.includes("LONG") && item.includes("EQUITY")  && item.includes("GROWTH") && !item.includes("Direct") && !item.includes("DIRECT")){
+    //         arrayForNavFilteredValues.push(netAssetValues[index]["Net Asset Value"])
+    //         return item;
+    //     }
+    // }
         else{
            if(item.includes(selectedValues.companyName.split(" ")[0]) &&
             item.includes(selectedValues.filter.split(" ")[0]) && 
             !item.includes("Direct") && !item.includes("DIRECT")){
             arrayForNavFilteredValues.push(netAssetValues[index]["Net Asset Value"]);
+
+            console.log("working")
             return item;
         }
         }
@@ -352,9 +394,9 @@ function handleBackspace(e){
                 fontWeight: "600",
                 transition:"all 0.5s"
             }} className='mutual-fund-house-name'>
-        {/*<div style={{width:"100px"}}>
+        {/* <div style={{width:"100px"}}>
             <img width={"100%"} src={`src/images/${item.split(" ")[0]}.jpg`}/>
-            </div>*/}
+            </div> */}
             <div className='mutual-fund-name'>
             {item}
             <ExternalLink size={"13px"} style={{marginLeft:"10px",color:"inherit"}} />
@@ -472,14 +514,14 @@ function handleBackspace(e){
                 </div>
             </div>
             <div>
-                <p>{oneYearNav[index]?oneYearNav[index]:"N/A"}</p>
+                <p>{oneYearReturn[index]?oneYearReturn[index]:"N/A"}</p>
             </div>
             <div>
-                <p>{threeYearNav[index]?threeYearNav[index]:"N/A"}</p>
+                <p>{threeYearReturn[index]?threeYearReturn[index]:"N/A"}</p>
             </div>
             <div>
-               <p>{fiveYearNav[index]?fiveYearNav[index]:"N/A"}</p>
-            </div>
+               <p>{fiveYearReturn[index]?fiveYearReturn[index]:"N/A"}</p>
+             </div>
             </div>
 
             </div>
@@ -488,9 +530,19 @@ function handleBackspace(e){
         })
        ):<p>No Schemes found with selected criteria</p>            
 }
+{
+    <select name="" id="">
+        {
+            filteredSchemeNames.length>0 && filteredSchemeNames.map((item)=>{
+            return  <option value="">{item}</option>
+            })
+        }
+    </select>
+}
    
     </div>
   </div>
+
 
   )
 }

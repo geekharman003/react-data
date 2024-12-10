@@ -12,24 +12,13 @@ function App() {
   const [schemeNames, setSchemeNames] = useState([]); // All Scheme Names
   const [filteredSchemeNames, setFilteredSchemeNames] = useState([]); // Filtered Scheme Names
   const [netAssetValues, setNetAssetValues] = useState([]); // Holds all Net Asset Values
-  const [AdityaBirlaElssFunds,setAdityaBirlaElssFunds] = useState([]); //holds all elss funds data of aditya birla
-  const [AxisBankElssFunds,setAxisBankElssFunds] = useState([]);
-  const [HDFCElssFunds,setHDFCElssFunds] = useState([]);
-  const [ICICIElssFunds,setICICIElssFunds] = useState([]);
-  const [KotakElssFunds,setKotakElssFunds] = useState([]);
-  const [LicElssFunds,setLicElssFunds] = useState([]);
-  const [MotilalElssFunds,setMotilalElssFunds] = useState([]);
-  const [TataElssFunds,setTataElssFunds] = useState([]);
-  const [AllElssFunds,setElssFunds] = useState({
-    adityabirla:"",
-    axisbank:"",
-    hdfcbank:"",
-    icicibank:"",
-    kotak:"",
-    lic:"",
-    motilal:"",
-    tata:""
-  })
+  const [TopFundsObject,setTopFundsObject] = useState([])
+  const [oneYearReturn,setOneYearReturn] = useState([])
+  const [twoYearReturn,setTwoYearReturn] = useState([])
+  const [threeYearReturn,setOthreeYearReturn] = useState([])
+  const [allData,setAllData] = useState([]);
+
+
  
 
 
@@ -66,177 +55,26 @@ function App() {
               item["Net Asset Value"]!==""
           )
           }
-        )
-  
-  
+          )
+
+          setTopFundsObject(result.data.filter((item)=>{
+            return item["Top Funds"]
+          }))
+          setAllData(result.data)
           setData(validData); // Save all valid rows
           setSchemeCodes(schemeCodeOptions); // Save Scheme Code options
           setSchemeNames(allSchemeNames); // Save all Scheme Names
           setNetAssetValues(allData); // Save Net Asset Values and Dates
+     
         } catch (error) {
           console.error("Error fetching data:", error);
         }
+    
       };
      
-
-      const AdityaBirlaElssFundsData = async ()=>{
-        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ30AQ0JuAntu-rZhB8BRMQYEORsqv0dRhGUV3wRizMti5nXXiS5lX7WeCqPh-g66m2MDhTeSctAeq7/pub?gid=1304174874&single=true&output=csv";
-
-        try{
-          const response = await fetch(url);
-          const csvText = await response.text();
-          const result = Papa.parse(csvText, { header: true });
-          setAdityaBirlaElssFunds(result.data)
-          setElssFunds((prev) => ({
-            ...prev,
-            adityabirla : result.data
-          }))
-        }
-        catch(error){
-          console.log("error fetching data:", error)
-        }
-      };
-
-
-      const AxisBankElssFundsData = async ()=>{
-        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ30AQ0JuAntu-rZhB8BRMQYEORsqv0dRhGUV3wRizMti5nXXiS5lX7WeCqPh-g66m2MDhTeSctAeq7/pub?gid=1730910392&single=true&output=csv";
-
-        try{
-          const response = await fetch(url);
-          const csvText = await response.text();
-          const result = Papa.parse(csvText, { header: true });
-          setAxisBankElssFunds(result.data)
-          setElssFunds((prev) => ({
-            ...prev,
-            axisbank : result.data
-          }))
-          
-        }
-        catch(error){
-          console.log("error fetching data:", error)
-        }
-      };
-
-      const HDFCElssFundsData  = async ()=>{
-        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ30AQ0JuAntu-rZhB8BRMQYEORsqv0dRhGUV3wRizMti5nXXiS5lX7WeCqPh-g66m2MDhTeSctAeq7/pub?gid=1819662100&single=true&output=csv";
-
-        try{
-          const response = await fetch(url);
-          const csvText = await response.text();
-          const result = Papa.parse(csvText, { header: true });
-          setHDFCElssFunds(result.data)
-          setElssFunds((prev) => ({
-            ...prev,
-            hdfcbank : result.data
-          }))
-        }
-        catch(error){
-          console.log("error fetching data:", error)
-        }
-      };
-
-      const ICICIElssFundsData  = async ()=>{
-        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ30AQ0JuAntu-rZhB8BRMQYEORsqv0dRhGUV3wRizMti5nXXiS5lX7WeCqPh-g66m2MDhTeSctAeq7/pub?gid=1463954198&single=true&output=csv";
-
-        try{
-          const response = await fetch(url);
-          const csvText = await response.text();
-          const result = Papa.parse(csvText, { header: true });
-          setICICIElssFunds(result.data)
-          setElssFunds((prev) => ({
-            ...prev,
-            icicibank : result.data
-          }))
-        }
-        catch(error){
-          console.log("error fetching data:", error)
-        }
-      };
-
-      const KotakElssFundsData  = async ()=>{
-        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ30AQ0JuAntu-rZhB8BRMQYEORsqv0dRhGUV3wRizMti5nXXiS5lX7WeCqPh-g66m2MDhTeSctAeq7/pub?gid=775144288&single=true&output=csv";
-
-        try{
-          const response = await fetch(url);
-          const csvText = await response.text();
-          const result = Papa.parse(csvText, { header: true });
-          setKotakElssFunds(result.data)
-          setElssFunds((prev) => ({
-            ...prev,
-            kotak : result.data
-          }))
-        }
-        catch(error){
-          console.log("error fetching data:", error)
-        }
-      };
-
-      const LicElssFundsData  = async ()=>{
-        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ30AQ0JuAntu-rZhB8BRMQYEORsqv0dRhGUV3wRizMti5nXXiS5lX7WeCqPh-g66m2MDhTeSctAeq7/pub?gid=468594612&single=true&output=csv";
-
-        try{
-          const response = await fetch(url);
-          const csvText = await response.text();
-          const result = Papa.parse(csvText, { header: true });
-          setLicElssFunds(result.data)
-          setElssFunds((prev) => ({
-            ...prev,
-            lic : result.data
-          }))
-         
-        }
-        catch(error){
-          console.log("error fetching data:", error)
-        }
-      };
-
-      const MotilalElssFundsData  = async ()=>{
-        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ30AQ0JuAntu-rZhB8BRMQYEORsqv0dRhGUV3wRizMti5nXXiS5lX7WeCqPh-g66m2MDhTeSctAeq7/pub?gid=669322833&single=true&output=csv";
-
-        try{
-          const response = await fetch(url);
-          const csvText = await response.text();
-          const result = Papa.parse(csvText, { header: true });
-          setMotilalElssFunds(result.data)
-          setElssFunds((prev) => ({
-            ...prev,
-            motilal : result.data
-          }))
-        }
-        catch(error){
-          console.log("error fetching data:", error)
-        }
-      };
-
-      const TataElssFundsData  = async ()=>{
-        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ30AQ0JuAntu-rZhB8BRMQYEORsqv0dRhGUV3wRizMti5nXXiS5lX7WeCqPh-g66m2MDhTeSctAeq7/pub?gid=2013014162&single=true&output=csv";
-
-        try{
-          const response = await fetch(url);
-          const csvText = await response.text();
-          const result = Papa.parse(csvText, { header: true });
-          setTataElssFunds(result.data)
-          setElssFunds((prev) => ({
-            ...prev,
-            tata : result.data
-          }))
-  
-        }
-        catch(error){
-          console.log("error fetching data:", error)
-        }
-      };
-
       fetchSheetData();
-      AdityaBirlaElssFundsData();
-      AxisBankElssFundsData();
-      HDFCElssFundsData();
-      ICICIElssFundsData(); 
-      KotakElssFundsData();
-      LicElssFundsData();
-      MotilalElssFundsData();
-      TataElssFundsData();
-  }, []);
+      
+    }, []);
 
   const handleSchemeCodeChange = (selectedOption) => {
     setSelectedSchemeCode(selectedOption);
@@ -291,7 +129,7 @@ function App() {
       </div> */}
       <Header />
       <Features />
-      <MutualFund schemeCodes={schemeCodes} schemeNames={schemeNames} netAssetValues = {netAssetValues} AllElssFunds={AllElssFunds} AdityaBirlaElssFunds={AdityaBirlaElssFunds}/>
+      <MutualFund schemeCodes={schemeCodes} allData={allData} schemeNames={schemeNames} netAssetValues = {netAssetValues} TopFundsObject = {TopFundsObject}/>
 
     </div>
   );
